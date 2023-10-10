@@ -1,19 +1,32 @@
 import './styles.css';
-
-//import {_products, createRandomID} from './data.js'
 import { API } from './api.js'
-
 import  ProductList  from './components/ProductList'
 import ActionPanel from './components/ActionPanel'
-
 import {useState, useEffect} from 'react'
 
 function App(){ 
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({})
+  const [error, setError] = useState(false)
   const [products, setProducts] = useState([]); 
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  /*
+  const APIWrapper = (callout, onSuccess, onFail, onFinally, ...args) =>{
+    setLoading(true);
+    callout(args).then((result)=>{
+      onSuccess && onSuccess(result)
+      setError(false)
+    }).catch((err)=>{
+      onFail && onFail()
+      console.log("errrrrr", err)
+      setError(true);
+    }).finally(()=>{
+      setLoading(false);
+      onFinally && onFinally()
+    })
+  }
+  */
 
   useEffect(()=>{getProducts()},[])
 
@@ -22,6 +35,7 @@ function App(){
     API.getProducts().then((result)=>{
       setProducts(result);
       setSelectedProduct(null);
+      setError(false)
     }).catch((err)=>{
       console.log("errrrrr", err)
       setError(true);
@@ -41,6 +55,7 @@ function App(){
   }
 
   const saveProduct = (new_product)=>{
+
   const _new_product =  {
     Developers: new_product?.Developers && new_product.Developers.length > 0 ? new_product.Developers : [],
     location: "",
@@ -52,16 +67,19 @@ function App(){
   }
 
   API.postProduct(_new_product).then((result)=>{
+
       setSelectedProduct( _new_product );
       setProducts(result); 
+
+      setError(false)
     }).catch((err)=>{
       setSelectedProduct( null );
-      console.log(err)
+      setError(true);   
+      console.log(err)  
     }).finally(()=>{
-
+      setLoading(false);
     })
-    setSelectedProduct( _new_product );
-  
+    
   }
 
   const editProduct = (modified_product)=>{
@@ -70,8 +88,9 @@ function App(){
     API.editProduct(modified_product,modified_product.productId).then((result)=>{
 
       setProducts(result); 
+      setError(false)
     }).catch((err)=>{
-      setError(err);
+      setError(true);
       console.log(err)
     }).finally(()=>{
       setSelectedProduct(null);
@@ -99,9 +118,10 @@ function App(){
     API.deleteProduct(product_id).then((result)=>{
       setSelectedProduct(null);
       setProducts(result); 
+      setError(false)
     }).catch((err)=>{
       setSelectedProduct( null );
-      setError(err);
+      setError(true);
       console.log(err)
     }).finally(()=>{setLoading(false);})
 
@@ -114,11 +134,11 @@ function App(){
 
     setLoading(true);
     API.findProductsByDeveloper(name).then((result)=>{
-      console.log("SEARCH DEV", result)
+      setError(false)
       setProducts(result); 
     }).catch((err)=>{
 
-      setError(err);
+      setError(true);
       console.log(err)
     }).finally(()=>{
       setLoading(false);
@@ -132,8 +152,9 @@ function App(){
 
     API.findProductsByScrumMaster(name).then((result)=>{
       setProducts(result); 
+      setError(false)
     }).catch((err)=>{
-      setError(err);
+      setError(true);
       console.log(err)
     }).finally(()=>{
       setLoading(false);
@@ -144,6 +165,7 @@ function App(){
     <div className="app_container">
 
           <ActionPanel 
+            error={error}
             selectedProduct={selectedProduct} 
             productCount={products.length} 
             setSelectedProduct={setSelectedProduct}
@@ -161,7 +183,7 @@ function App(){
             selectedProduct={selectedProduct} 
             products={products}/> 
     </div>
-    </> );
+  </>);
 }
 
 export default App;

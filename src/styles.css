@@ -6,6 +6,16 @@
   width: 100dvw;
 }
 
+.my_frame{
+  height: 100%;
+  width: 100%;
+}
+
+.my_frame_container{
+  height: 100dvh;
+  width: 100dvw;
+}
+
 .container_style{
   padding: .5rem;
   box-sizing: border-box;

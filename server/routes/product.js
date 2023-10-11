@@ -268,7 +268,7 @@ router.get('/', (req, res) => {
 //GET ALL PRODUCTS
 router.get('/products/', (req, res) => {
 console.log("/api/product/products/")
-res.status(200).send(data);
+  res.status(200).send(data);
 })
 
 //ADD NEW PRODUCT
@@ -305,20 +305,20 @@ router.put('/:id', (req, res) => {
      isProductIdInvalid(id) ||
      isLocationInvalid(new_product?.location)){
       res.status(400).send(data);   //if the id or body contain missing keys/bad data
-  }
-
-  const product = data.find((datas) => datas.productId === id);
-
-  if(!product){ 
-    res.status(410).send(data); //if the product was deleted since the user last refreshed records
   }else{
-    product.Developers = [...new_product.Developers];
-    product.methodology =new_product.methodology;
-    product.productName = new_product.productName;
-    product.productOwnerName = new_product.productOwnerName;
-    product.scrumMasterName = new_product.scrumMasterName;
-    product.location = new_product.location;    
-    res.status(200).send(data);  
+    const product = data.find((datas) => datas.productId === id);
+
+    if(!product){ 
+      res.status(410).send(data); //if the product was deleted since the user last refreshed records
+    }else{
+      product.Developers = [...new_product.Developers];
+      product.methodology =new_product.methodology;
+      product.productName = new_product.productName;
+      product.productOwnerName = new_product.productOwnerName;
+      product.scrumMasterName = new_product.scrumMasterName;
+      product.location = new_product.location;    
+      res.status(200).send(data);  
+    }
   }
 })
 
@@ -330,16 +330,14 @@ router.delete('/:id', (req, res) => {
 
   if(isProductIdInvalid(id)){
      res.status(400).send(data);
-  }
-
-  const data_length = data.length
-  data = data.filter((datas)=>datas.productId !== id);
-
-  if(data.length === data_length){ // id was not found
-    res.status(410).send(data);
-  }
-  else{
-    res.status(200).send(data);
+  }else{
+    const data_length = data.length
+    data = data.filter((datas)=>datas.productId !== id);
+    if(data.length === data_length){ // id was not found
+      res.status(410).send(data);
+    }else{
+      res.status(200).send(data);
+    }
   }
 })
 
@@ -349,15 +347,14 @@ router.get('/products/scrum_master/:name', (req, res) => {
   const sm_name = req.params.name;
   if(isScrumMasterNameInvalid(sm_name)){
     res.status(400).send(data);
- }
-
- const result = data.filter((p)=>p?.scrumMasterName === sm_name);
-
- if(result.length === 0){
-  res.status(410).send(result); //no results found
  }else{
-  res.status(200).send(result);
- }
+    const result = data.filter((p)=>p?.scrumMasterName === sm_name);
+    if(result.length === 0){
+      res.status(410).send(result); //no results found
+    }else{
+      res.status(200).send(result);
+    }
+  }
 })
 
 //SEARCH PRODUCTS BY DEVELOPER
@@ -367,15 +364,15 @@ router.get('/products/developer/:name', (req, res) => {
 
   if(isDeveloperNameInvalid(dev_name)){
     res.status(400).send(data);
-  }
-
-  const result = data.filter((p)=>p.Developers?.includes(dev_name));
+  }else{
+    const result = data.filter((p)=>p.Developers?.includes(dev_name));
 
   if(result.length === 0){
     res.status(410).send(result); //no results found
    }else{
     res.status(200).send(result);
    }
+  }
 })
 
 module.exports = router;

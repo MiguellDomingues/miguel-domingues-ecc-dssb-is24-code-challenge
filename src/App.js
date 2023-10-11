@@ -4,169 +4,126 @@ import  ProductList  from './components/ProductList'
 import ActionPanel from './components/ActionPanel'
 import {useState, useEffect} from 'react'
 
-function App(){ 
+function App(){
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false)
-  const [products, setProducts] = useState([]); 
-  const [selectedProduct, setSelectedProduct] = useState(null);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(false)
+const [products, setProducts] = useState([]); 
+const [selectedProduct, setSelectedProduct] = useState(null);
 
-  useEffect(()=>{getProducts()},[])
-
-  const getProducts = ()=>{
-    setLoading(true);
-    API.getProducts().then((result)=>{
-      setProducts(result);
-      setSelectedProduct(null);
-      setError(false)
-    }).catch((err)=>{
-      console.log("errrrrr", err)
-      setError(true);
-    }).finally(()=>{
-      setLoading(false);
-    })
-  }
-
-  const selectProduct = (product)=>{
-    if(product){
-      setSelectedProduct({
-        ...product, 
-        Developers: product.Developers? [...product.Developers] : []}); //copy the object
-    }else{
-      setSelectedProduct(null);
-    } 
-  }
-
-  const saveProduct = (new_product)=>{
-
-    const _new_product =  {
-      Developers: new_product?.Developers && new_product.Developers.length > 0 ? new_product.Developers : [],
-      location: "",
-      methodology: new_product.methodology || "",
-      productName: new_product.productName || "",
-      productOwnerName: new_product.productOwnerName || "",
-      scrumMasterName: new_product.scrumMasterName || "",
-      startDate: new_product.startDate || "",
-    }
-
-  API.postProduct(_new_product).then((result)=>{
-
-      setSelectedProduct( _new_product );
-      setProducts(result); 
-
-      setError(false)
-    }).catch((err)=>{
-      setSelectedProduct( null );
-      setError(true);   
-      console.log(err)  
-    }).finally(()=>{
-      setLoading(false);
-    })
-    
-  }
-
-  const editProduct = (modified_product)=>{
-
-    setLoading(true);
-    API.editProduct(modified_product,modified_product.productId).then((result)=>{
-
-      setProducts(result); 
-      setError(false)
-    }).catch((err)=>{
-      setError(true);
-      console.log(err)
-    }).finally(()=>{
-      setSelectedProduct(null);
-      setLoading(false);
-    })
-
-    /*
-    const _product = products.find((product) => product.productId === modified_product.productId);
-
-    _product.Developers =[...modified_product.Developers];
-    _product.methodology = modified_product.methodology;
-    _product.productName = modified_product.productName;
-    _product.productOwnerName = modified_product.productOwnerName;
-    _product.scrumMasterName = modified_product.scrumMasterName;
-    _product.location = modified_product.location;
-
-    setProducts([...products])
-    */
-
-  }
-
-  const deleteProduct = (product_id)=>{
-
-    setLoading(true);
-    API.deleteProduct(product_id).then((result)=>{
-      setSelectedProduct(null);
-      setProducts(result); 
-      setError(false)
-    }).catch((err)=>{
-      setSelectedProduct( null );
-      setError(true);
-      console.log(err)
-    }).finally(()=>{setLoading(false);})
-
-  // setProducts([...products.filter((product)=>product.productId !== product_id)]);
-  // setSelectedProduct( null );
+/* 
+  sequence of then()/catch()/finally() actions for every callout
   
-  }
-
-  const getProductsByDeveloper = (name)=>{
-
-    setLoading(true);
-    API.findProductsByDeveloper(name).then((result)=>{
-      setError(false)
-      setProducts(result); 
+  CB:         a function which returns a Promise 
+  successCB:  function to execute upon success
+  errorCB:    function to execute upon failure
+  finallyCB;  function to execute upon completion
+*/
+function APIWrapper(CB, successCB = ()=>{}, errorCB = ()=>{}, finallyCB = ()=>{}){ 
+    setLoading(true)        //always set loading when callout begins
+    CB().then((result)=>{
+        setError(false)     //successfull callouts will clear the previous err
+        successCB(result)
     }).catch((err)=>{
-
-      setError(true);
-      console.log(err)
+        console.log("ERROR: ", err)
+        setError(true)      
+        errorCB(err)
     }).finally(()=>{
-      setLoading(false);
+        setLoading(false)  //always unset loading when callout ends
+        finallyCB()
     })
+}
 
+useEffect(()=>{getProducts()},[]) //execute once on component mount
+
+const selectProduct = (product)=>{
+  if(product){
+    setSelectedProduct({
+      ...product, 
+      Developers: product.Developers? [...product.Developers] : []}); //copy the object
+  }else{
+    setSelectedProduct(null);
+  } 
+}
+
+const getProducts = ()=>{
+    APIWrapper(
+        API.getProducts,
+          (results)=>{
+              setProducts(results)
+              setSelectedProduct(null);})
+}
+
+const saveProduct = (new_product)=>{ 
+  const _new_product =  {
+    Developers: new_product?.Developers && new_product.Developers.length > 0 ? new_product.Developers : [], 
+    location: "",
+    methodology: new_product.methodology || "",
+    productName: new_product.productName || "",
+    productOwnerName: new_product.productOwnerName || "",
+    scrumMasterName: new_product.scrumMasterName || "",
+    startDate: new_product.startDate || "",
   }
 
-  const getProductsByScrumMaster= (name)=>{
+  APIWrapper(
+    ()=>API.postProduct(_new_product),
+      (results)=>{setProducts(results);},
+      (err)=>setSelectedProduct(null))
+}
 
-    setLoading(true);
+const editProduct = (modified_product)=>{
+  APIWrapper(
+    ()=>API.editProduct(modified_product,modified_product.productId),
+      (results)=>{setProducts(results);},
+      (err)=>setSelectedProduct(null))
+}
 
-    API.findProductsByScrumMaster(name).then((result)=>{
-      setProducts(result); 
-      setError(false)
-    }).catch((err)=>{
-      setError(true);
-      console.log(err)
-    }).finally(()=>{
-      setLoading(false);
-    })
-  }
+const deleteProduct = (product_id)=>{
+  APIWrapper(
+    ()=>API.deleteProduct(product_id),
+      (results)=>{
+          setProducts(results);
+          setSelectedProduct(null);},
+      (err)=>setSelectedProduct(null))
+}
 
-  return (<>
-    <div className="app_container">
+const getProductsByDeveloper = (name)=>{
+  setSelectedProduct(null);
+  APIWrapper(
+    ()=>API.findProductsByDeveloper(name),
+      (results)=>setProducts(results))
+}
 
-          <ActionPanel 
-            error={error}
-            selectedProduct={selectedProduct} 
-            productCount={products.length} 
-            setSelectedProduct={setSelectedProduct}
-            loading={loading}
-            getProducts={getProducts}
-            selectProduct={selectProduct}
-            saveProduct ={saveProduct}
-            editProduct ={editProduct}
-            deleteProduct ={ deleteProduct }
-            getProductsByDeveloper ={ getProductsByDeveloper}
-            getProductsByScrumMaster={getProductsByScrumMaster}/>
-        
-          <ProductList 
-            selectProduct={selectProduct} 
-            selectedProduct={selectedProduct} 
-            products={products}/> 
-    </div>
-  </>);
+const getProductsByScrumMaster= (name)=>{
+  setSelectedProduct(null);
+  APIWrapper(
+    ()=>API.findProductsByScrumMaster(name),
+      (results)=>setProducts(results))
+}
+
+return (<>
+  <div className="app_container">
+
+        <ActionPanel 
+          error={error}
+          selectedProduct={selectedProduct} 
+          productCount={products.length} 
+          setSelectedProduct={setSelectedProduct}
+          loading={loading}
+          getProducts={getProducts}
+          selectProduct={selectProduct}
+          saveProduct ={saveProduct}
+          editProduct ={editProduct}
+          deleteProduct ={ deleteProduct }
+          getProductsByDeveloper ={ getProductsByDeveloper}
+          getProductsByScrumMaster={getProductsByScrumMaster}/>
+      
+        <ProductList 
+          selectProduct={selectProduct} 
+          selectedProduct={selectedProduct} 
+          products={products}/> 
+  </div>
+</>);
 }
 
 export default App;

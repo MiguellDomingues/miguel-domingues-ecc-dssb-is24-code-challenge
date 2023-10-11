@@ -35,7 +35,7 @@ Dev/Testing Enviroment:
   - change `set PORT=3006 && react-scripts start"` to `"react-scripts start"` (this defaults the front-end to port 3000)
     - change the port for the backend:
       - navigate to src/api.js:
-        - change `const PORT = 3000` to  -> `const PORT = (any open port)`
+        - change `const PORT = 3000` to `const PORT = (any open port)`
       - navigate to server/main.js
         - change `const port = 3000` to  `const port = (same as above)`
  

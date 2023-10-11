@@ -1,5 +1,6 @@
 
-const URL = "http://localhost:3000/";
+const PORT = 3000;
+const URL = `http://localhost:${PORT}/`;
 const BASE_ROUTE = 'api/product/'
 
 const ROUTES = {

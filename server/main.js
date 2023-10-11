@@ -10,16 +10,12 @@ const port = 3000;
 app.use(express.json());
 app.use( cors() ); 
 
-//app.use("/books", require("./routes/books"));
-
 app.use(
     bodyParser.urlencoded({
       extended: true,
     })
   );
 app.use(bodyParser.json());
-
-///api/product
 
 app.use("/api/product", require("./routes/product"));
 
@@ -59,30 +55,6 @@ app.use(
       "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-newspaper.css",
   })
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// A DB.js FILE.  add a thin layer of adstraction
-//between data processing and endpoints
-//endpoints should be for param checking
-
-// ie: name: "", name: "  ", name: null, (name not on obj at all)
-//google 'sanitize rest inputs'
-
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)

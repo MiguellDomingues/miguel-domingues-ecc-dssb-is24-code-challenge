@@ -4,7 +4,8 @@ import { useState } from 'react'
 
 function DeveloperPanel({updateDevelopers, developers}){
 
-    const keyed_developers = developers.map((d, idx)=>{return {id: idx,val: d}}) //add index-based keys to allow for unique duplicate names
+   //add index-based keys to allow for unique duplicate names ( ["a", "a", "b"] => [{id: 0, val: "a"}, {id: 1, val: "a"},{id: 2, val: "b"}]
+    const keyed_developers = developers.map((d, idx)=>{return {id: idx,val: d}}) 
   
     const [inputNewDeveloper, setInputNewDeveloper] = useState("")
   
@@ -38,10 +39,18 @@ function DeveloperPanel({updateDevelopers, developers}){
     return(<div className="developer_list">
       <form onSubmit={handleSaveDeveloper} >
         <input type="text" value={inputNewDeveloper} onChange={handleOnChange}  required/>
-        <input type="submit" value="Confirm New Developer"  disabled={developers.length >= 5 || inputNewDeveloper.trim().length === 0} />
+        <input 
+          type="submit" 
+          disabled={developers.length >= 5 || inputNewDeveloper.trim().length === 0} //disable adding devs when there are 5 developers or the input field is empty
+          value="Confirm New Developer"/>
       </form>
         <div className="dev_list container_style">
-          {keyed_developers.map((keyed_developer, idx)=><Developer keyed_developer={keyed_developer} key={idx} handleDeleteDeveloper={handleDeleteDeveloper} handleEditDeveloper={handleEditDeveloper}/>)}
+          {keyed_developers.map((keyed_developer, idx)=>
+            <Developer 
+              keyed_developer={keyed_developer} 
+              key={idx} 
+              handleDeleteDeveloper={handleDeleteDeveloper} 
+              handleEditDeveloper={handleEditDeveloper}/>)}
         </div>
     </div>)
   }

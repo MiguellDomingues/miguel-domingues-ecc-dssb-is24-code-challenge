@@ -11,23 +11,6 @@ function App(){
   const [products, setProducts] = useState([]); 
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  /*
-  const APIWrapper = (callout, onSuccess, onFail, onFinally, ...args) =>{
-    setLoading(true);
-    callout(args).then((result)=>{
-      onSuccess && onSuccess(result)
-      setError(false)
-    }).catch((err)=>{
-      onFail && onFail()
-      console.log("errrrrr", err)
-      setError(true);
-    }).finally(()=>{
-      setLoading(false);
-      onFinally && onFinally()
-    })
-  }
-  */
-
   useEffect(()=>{getProducts()},[])
 
   const getProducts = ()=>{
@@ -56,15 +39,15 @@ function App(){
 
   const saveProduct = (new_product)=>{
 
-  const _new_product =  {
-    Developers: new_product?.Developers && new_product.Developers.length > 0 ? new_product.Developers : [],
-    location: "",
-    methodology: new_product.methodology || "",
-    productName: new_product.productName || "",
-    productOwnerName: new_product.productOwnerName || "",
-    scrumMasterName: new_product.scrumMasterName || "",
-    startDate: new_product.startDate || "",
-  }
+    const _new_product =  {
+      Developers: new_product?.Developers && new_product.Developers.length > 0 ? new_product.Developers : [],
+      location: "",
+      methodology: new_product.methodology || "",
+      productName: new_product.productName || "",
+      productOwnerName: new_product.productOwnerName || "",
+      scrumMasterName: new_product.scrumMasterName || "",
+      startDate: new_product.startDate || "",
+    }
 
   API.postProduct(_new_product).then((result)=>{
 

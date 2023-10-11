@@ -1,4 +1,3 @@
-
 import {useState, useRef} from 'react'
 import  DeveloperPanel  from './DeveloperPanel'
 import '../styles.css';
@@ -15,8 +14,6 @@ function ModalPanel({
   
     const [formValues, setFormValues] = useState(formData);
     const form_ref = useRef(null);
-    const loc_ref = useRef(null);
-
 
     function resetForm(e){
       e.preventDefault()
@@ -46,28 +43,57 @@ function ModalPanel({
                 <div className="prop_values container_style">
                   <div className="form_value">
                     <span>ProductName:</span>
-                    <input type="text" name="productName" required onChange={handleOnChange} value={formValues.productName}></input>
+                    <input
+                      type="text" 
+                      name="productName" 
+                      required={actionType === "ADD"} 
+                      onChange={handleOnChange} 
+                      value={formValues.productName}/>
                   </div>
                   <div className="form_value">
-                    <span>Scrum Master:</span><input type="text" name="scrumMasterName" required onChange={handleOnChange} value={ formValues.scrumMasterName}></input>
+                    <span>Scrum Master:</span>
+                    <input
+                      type="text" 
+                      name="scrumMasterName" 
+                      required={actionType === "ADD"} 
+                      onChange={handleOnChange} 
+                      value={ formValues.scrumMasterName}/>
                   </div>
                   <div className="form_value">
-                    <span>Product Owner:</span><input type="text" name="productOwnerName" required onChange={handleOnChange} value={ formValues.productOwnerName}></input>
+                    <span>Product Owner:</span>
+                    <input 
+                      type="text" 
+                      name="productOwnerName" 
+                      required={actionType === "ADD"} 
+                      onChange={handleOnChange} 
+                      value={ formValues.productOwnerName}/>
                   </div>
                     
                   {actionType === "ADD" ? 
                     <div className="form_value">
-                      <span>Start Date</span><input type="date" name="startDate" required onChange={handleOnChange} value={ formValues.startDate}></input>
-                    </div> :
-                    <div className="form_value">
-                      <span>Location</span><input ref={loc_ref} type="url" name="location" value={formValues.location || "https://github.com/"} onChange={handleOnChange}               
-                      ></input>
-                    </div>
-                  }      
+                      <span>Start Date</span>
+                      <input 
+                        type="date" 
+                        name="startDate"
+                        required={actionType === "ADD"} 
+                        onChange={handleOnChange} 
+                        value={ formValues.startDate}/>
+                    </div> : actionType === "EDIT" ?
+                      <div className="form_value">
+                        <span>Location</span>
+                        <input 
+                          type="url" 
+                          name="location" 
+                          value={formValues.location} 
+                          onChange={handleOnChange}/>
+                      </div> : <></>}      
   
                   <div className="form_value"><span>Methodology:</span> 
                   <select name="methodology" value={formValues.methodology} onChange={handleOnChange}>
-                    {METHODOLIGIES.map((methodology,idx)=><option key={idx} value={methodology}>{methodology}</option>) }                   
+                    {METHODOLIGIES.map((methodology,idx)=>
+                      <option key={idx} value={methodology}>
+                        {methodology}
+                      </option>) }                   
                   </select>
                   </div>  
                 </div>

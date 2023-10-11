@@ -36,8 +36,7 @@ function ActionPanel({
   }){
   
     const [actionType, setActionType] = useState(null);
-    const [isOpen, toggleModel] = useState(false);
-  
+
     function handleDelete(product){
       if (window.confirm(`Delete Product ${product.productId} ?`)) {
         deleteProduct(product.productId)
@@ -51,12 +50,10 @@ function ActionPanel({
   
     function handleEditAction(product){
       editProduct(trimStringProps(product));
-      //editProduct(product);
       setActionType(null);
     }
 
-    return(<>
-     
+    return(<>    
       <div className="action_panel container_style">
         <div className="">
         <h1>Actions</h1>
@@ -66,30 +63,30 @@ function ActionPanel({
               <span>Product Count:</span>{productCount}
 
               <button onClick={e=>{getProducts()}}  disabled={loading}>Get All Records</button>
-              <button onClick={e=>{setActionType("ADD");toggleModel(true);} } disabled={loading || error}>Add</button>
-              <button disabled={!selectedProduct || loading || error} onClick={e=>{setActionType("EDIT");toggleModel(true); }} >Edit</button>
+              <button onClick={e=>{setActionType("ADD")} } disabled={loading || error}>Add</button>
+              <button disabled={!selectedProduct || loading || error} onClick={e=>{setActionType("EDIT")}} >Edit</button>
               <button disabled={!selectedProduct || loading || error} onClick={e=>{handleDelete(selectedProduct)}}>Delete</button>
 
               <SearchPanel searchCB={getProductsByDeveloper} btnName={"Search Products By Developer Name"} loading={loading} error={error}/>
               <SearchPanel searchCB={getProductsByScrumMaster} btnName={"Search Products By ScrumMaster Name"} loading={loading} error={error}/>
         </div>
-  
-        {isOpen ? (actionType === "ADD" ? 
-           <ModalPanel 
-            close={()=>{toggleModel(!isOpen)}}
+
+        {(actionType === "ADD" ? 
+           <ModalPanel //ADD FORM
+            close={()=>{setActionType(null)}}
             submitAction={handleSaveAction}
             actionType = {actionType }
-            formData={ emptyForm}
+            formData={ emptyForm} //pass an empty form 
             formTitle={"Add Product"}
             /> 
           : (actionType === "EDIT") ?  
-          <ModalPanel 
-            close={()=>{toggleModel(!isOpen)}}
+          <ModalPanel //EDIT form
+            close={()=>{setActionType(null)}}
             submitAction={handleEditAction}
-            formData={{...selectedProduct, Developers: [...selectedProduct.Developers]}}
+            formData={{...selectedProduct, Developers: [...selectedProduct.Developers]}} //deep copy the props
             actionType = {actionType }
             formTitle={"Edit Product"}/> 
-        : <></>): <></>}  
+        : <></>)}  
   
       </div></>);
   }

@@ -2,7 +2,7 @@
 const URL = "http://localhost:3000/";
 const BASE_ROUTE = 'api/product/'
 
-const endpoints = {
+const ROUTES = {
   GET_PRODUCTS: 'products/',
   POST_PRODUCT: '',
   DELETE_PRODUCT: '',
@@ -19,10 +19,10 @@ async function fetchWrapper(url, options){
         .catch((error) => {reject(error)});
 });}
 
-const getProducts = async () => fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.GET_PRODUCTS}`, null)
+const getProducts = async () => fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.GET_PRODUCTS}`, null)
 
 const postProduct = async (product) => 
-  fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.POST_PRODUCT}`, {
+  fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.POST_PRODUCT}`, {
     method: 'POST',
     body: JSON.stringify(product),
     headers: {
@@ -30,22 +30,22 @@ const postProduct = async (product) =>
 }})
 
 const deleteProduct = async (product_id) => 
-fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.DELETE_PRODUCT}${product_id}`, {
+fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.DELETE_PRODUCT}${product_id}`, {
   method: 'DELETE',
   headers: {
       "Content-Type": "application/json",
   }})
 
 const editProduct = async (product, product_id) => 
-fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.PATCH_PRODUCT}${product_id}`, {
-  method: 'PATCH',
+fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.PATCH_PRODUCT}${product_id}`, {
+  method: 'PUT',
   body: JSON.stringify(product),
   headers: {
       "Content-Type": "application/json",
   }})
 
 const findProductsByDeveloper = async (developer_name) => 
-fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.SEARCH_PRODUCTS_BY_DEVELOPER}${developer_name}`, {
+fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.SEARCH_PRODUCTS_BY_DEVELOPER}${developer_name}`, {
   method: 'GET',
   headers: {
       "Content-Type": "application/json",
@@ -53,7 +53,7 @@ fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.SEARCH_PRODUCTS_BY_DEVELOPER}${deve
 })
 
 const findProductsByScrumMaster = async (sm_name) => 
-fetchWrapper(`${URL}${BASE_ROUTE}${endpoints.SEARCH_PRODUCTS_BY_SCRUMMASTER}${sm_name}`, {
+fetchWrapper(`${URL}${BASE_ROUTE}${ROUTES.SEARCH_PRODUCTS_BY_SCRUMMASTER}${sm_name}`, {
   method: 'GET',
   headers: {
       "Content-Type": "application/json",

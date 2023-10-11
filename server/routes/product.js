@@ -1,7 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-let {data,  createRandomID}  = require('./data.js')
+let {data,  createRandomID, validators }  = require('./data.js')
+
+const {
+  isDeveloperNameInvalid,
+  isDevelopersInvalid,
+  isProductNameInvalid,
+  isMethodologyInvalid,
+  isProductIdInvalid,
+  isScrumMasterNameInvalid,
+  isStartDateInvalid,
+  isLocationInvalid,
+} = validators
+
 
 /**
  * @swagger
@@ -231,8 +243,6 @@ let {data,  createRandomID}  = require('./data.js')
  *         description: server error
  */
 
-
-
 //health check
 router.get('/', (req, res) => {
   res.status(200).send('OK');
@@ -246,68 +256,105 @@ res.status(200).send(data);
 
 //ADD NEW PRODUCT
 router.post('/', (req, res) => {
+
   console.log("/api/product/ POST",req.body)
 
-  data.push({
-      ...req.body,
-      productId: createRandomID(),  
-      Developers: req.body.Developers
-  });
-  console.log("/api/product/",req.body)
-  res.status(201).send(data);
+  const product = req.body
+
+  if(isDevelopersInvalid(product?.Developers) ||
+     isProductNameInvalid(product?.productName) ||
+     isMethodologyInvalid(product?.methodology) ||
+     isScrumMasterNameInvalid(product?.scrumMasterName) ||
+     isStartDateInvalid(product?.startDate)){
+     res.status(400).send(data);
+  }else{   
+    data.push({...product,productId: createRandomID() });
+    res.status(200).send(data);
+  }
 })
 
 //EDIT PRODUCT
-router.patch('/:id', (req, res) => {
-  const id = req.params.id;
+router.put('/:id', (req, res) => {
+  
   console.log("EDIT /api/product/:id",req.body);
+
+  const id = req.params.id;
+  const new_product = req.body
+
+  if(isDevelopersInvalid(new_product?.Developers) ||
+     isProductNameInvalid(new_product?.productName) ||
+     isMethodologyInvalid(new_product?.methodology) ||
+     isScrumMasterNameInvalid(new_product?.scrumMasterName) ||
+     isProductIdInvalid(id) ||
+     isLocationInvalid(new_product?.location)){
+      res.status(400).send(data);   //if the id or body contain missing keys/bad data
+  }
 
   const product = data.find((datas) => datas.productId === id);
 
-  /*if the product was not found
-  return a resource not found flag*/
-  if(product){
-      const {
-          Developers,
-          methodology,
-          productName,
-          productOwnerName,
-          scrumMasterName,
-          location,
-      } = req.body;
-
-      product.Developers = [...Developers];
-      product.methodology =methodology;
-      product.productName = productName;
-      product.productOwnerName = productOwnerName;
-      product.scrumMasterName =scrumMasterName;
-      product.location =location;
-  }  
-  res.status(200).send(data);
+  if(!product){ 
+    res.status(410).send(data); //if the product was deleted since the user last refreshed records
+  }else{
+    product.Developers = [...new_product.Developers];
+    product.methodology =new_product.methodology;
+    product.productName = new_product.productName;
+    product.productOwnerName = new_product.productOwnerName;
+    product.scrumMasterName = new_product.scrumMasterName;
+    product.location = new_product.location;    
+    res.status(200).send(data);  
+  }
 })
 
 //DELETE PRODUCT
 router.delete('/:id', (req, res) => {
-  console.log("DELETE /api/product/:id",req.body);
+
   const id = req.params.id
-  data = data.filter((datas)=>datas.productId !== id);
-  res.status(200).send(data);
+
+  console.log("DELETE /api/product/:id", id);
+
+  if(isProductIdInvalid(id)){
+    console.log("daadadasd")
+     res.status(400).send(data);
+  }
+  else{
+    data = data.filter((datas)=>datas.productId !== id);
+    res.status(200).send(data);
+  }
 })
 
 //SEARCH PRODUCTS BY SCRUMMASTER
 router.get('/products/scrum_master/:name', (req, res) => {
-  console.log("GET PRODUCTS BY SCRUM MASTERER /api/product/:name");
+  console.log("GET PRODUCTS BY SCRUM MASTERER /api/product/:name"); 
   const sm_name = req.params.name;
-  const result = data.filter((p)=>p?.scrumMasterName === sm_name);
+  if(isScrumMasterNameInvalid(sm_name)){
+    res.status(400).send(data);
+ }
+
+ const result = data.filter((p)=>p?.scrumMasterName === sm_name);
+
+ if(result.length === 0){
+  res.status(410).send(result); //no results found
+ }else{
   res.status(200).send(result);
+ }
 })
 
 //SEARCH PRODUCTS BY DEVELOPER
 router.get('/products/developer/:name', (req, res) => {
   console.log("GET PRODUCTS BY DEV /api/product/:name");
   const dev_name = req.params.name;
+
+  if(isDeveloperNameInvalid(dev_name)){
+    res.status(400).send(data);
+  }
+
   const result = data.filter((p)=>p.Developers?.includes(dev_name));
-  res.status(200).send(result);
+
+  if(result.length === 0){
+    res.status(410).send(result); //no results found
+   }else{
+    res.status(200).send(result);
+   }
 })
 
 module.exports = router;

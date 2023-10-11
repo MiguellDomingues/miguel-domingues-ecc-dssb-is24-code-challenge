@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+# Submission For miguel-domingues-ecc-dssb-is24 Coding Challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dev/Testing Enviroment: 
+- Windows 10 Home 64-bit
+- Node 18.3
+- Chrome Version 116.0.5845.188 (Official Build) (64-bit)
 
-## Available Scripts
+## Installation Instructions
 
-In the project directory, you can run:
+- clone the repo
+  - `git clone https://github.com/MiguellDomingues/miguel-domingues-ecc-dssb-is24-code-challenge.git`
+- navigate into the project folder
+  - `cd MiguellDomingues/miguel-domingues-ecc-dssb-is24-code-challenge`
+- install dependencies:
+  - `npm install`
+  
+- to run the client:
+  - in the project root directory:
+    - `npm start`
+- to run the server:
+  - open another terminal window
+  - navigate to project root
+  - in the /server directory:
+    - `node main.js`
+    
+### Potential Issues:
+- the swagger docs may not render in some browser enviroments (wrapped in an <iframe>)
+- if there are issues running the server or client simultaneously, it could be the script not re-assigning the port properly (by default the buildtool deploys the app to localhost://3000)
+- to fix, go to package.json and find:
+  - `"start": "set PORT=3006 && react-scripts start"`
+    - On Linux/MacOS enviroment: 
+      - change it to `"PORT=3006 react-scripts start"`
 
-### `npm start`
+- or alternatively:
+  - change `set PORT=3006 && react-scripts start"` to `"react-scripts start"` (this defaults the front-end to port 3000)
+    - change the port for the backend:
+      - navigate to src/api.js:
+        - change `const PORT = 3000` to  -> `const PORT = (any open port)`
+      - navigate to server/main.js
+        - change `const port = 3000` to  `const port = (same as above)`
+ 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

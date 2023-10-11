@@ -2,12 +2,13 @@ import '../styles.css';
 
 import { useState } from 'react'
 
+//the section containing the add/confirm add developer inputs and the list of developers
 function DeveloperPanel({updateDevelopers, developers}){
 
    //add index-based keys to allow for unique duplicate names ( ["a", "a", "b"] => [{id: 0, val: "a"}, {id: 1, val: "a"},{id: 2, val: "b"}]
     const keyed_developers = developers.map((d, idx)=>{return {id: idx,val: d}}) 
   
-    const [inputNewDeveloper, setInputNewDeveloper] = useState("")
+    const [inputNewDeveloper, setInputNewDeveloper] = useState("") 
   
      function handleOnChange(e){ 
         setInputNewDeveloper(e.target.value)     
@@ -40,8 +41,8 @@ function DeveloperPanel({updateDevelopers, developers}){
       <form onSubmit={handleSaveDeveloper} >
         <input type="text" value={inputNewDeveloper} onChange={handleOnChange}  required/>
         <input 
-          type="submit" 
-          disabled={developers.length >= 5 || inputNewDeveloper.trim().length === 0} //disable adding devs when there are 5 developers or the input field is empty
+          type="submit" //disable adding devs when there are 5 developers or the input field is empty/full if spaces
+          disabled={developers.length >= 5 || inputNewDeveloper.trim().length === 0} 
           value="Confirm New Developer"/>
       </form>
         <div className="dev_list container_style">
@@ -54,43 +55,44 @@ function DeveloperPanel({updateDevelopers, developers}){
         </div>
     </div>)
   }
-  
-  function Developer({keyed_developer,handleDeleteDeveloper,handleEditDeveloper}){
-  
-    const [actionType, setActionType] = useState("");
-    const [editValue, setEditValue] = useState(keyed_developer.val);
-  
-    function handleOnChange(e){ 
-        setEditValue(e.target.value)   
-     }
-  
-     function cancelEdit(e){
-      e.preventDefault()
-      setActionType("DEFAULT")
-      setEditValue(keyed_developer.val)
-     }
-  
-     function submitEdit(e){
-      e.preventDefault()
-      handleEditDeveloper(editValue.trim(), keyed_developer.id)
-      setActionType("DEFAULT")
-     }
-  
-    return(<div className="dev_row">
-      { actionType === "EDIT" ? <>
-      <form onSubmit={submitEdit}>
-        <div>
-          <input type="text" value={editValue} onChange={handleOnChange} required/>
-          <input type="submit" value="Confirm Edit" disabled={editValue.trim().length === 0}/>
-          <button onClick={cancelEdit}>Cancel Edit</button>
-        </div>
-      </form>   
-      </> : <> 
-      {keyed_developer.val}
-      <button onClick={ e=>handleDeleteDeveloper(keyed_developer.id)}>Delete</button>
-      <button onClick={ e=>{setActionType("EDIT")}}>Edit</button> 
-      </>
-    } </div>)
+
+//the row containing the delete/edit/confirm edit/cancel edit functions for a developer name
+function Developer({keyed_developer,handleDeleteDeveloper,handleEditDeveloper}){
+
+  const [actionType, setActionType] = useState("");
+  const [editValue, setEditValue] = useState(keyed_developer.val);
+
+  function handleOnChange(e){ 
+      setEditValue(e.target.value)   
+    }
+
+    function cancelEdit(e){
+    e.preventDefault()
+    setActionType("DEFAULT")
+    setEditValue(keyed_developer.val)
+    }
+
+    function submitEdit(e){
+    e.preventDefault()
+    handleEditDeveloper(editValue.trim(), keyed_developer.id)
+    setActionType("DEFAULT")
+    }
+
+  return(<div className="dev_row">
+    { actionType === "EDIT" ? <>
+    <form onSubmit={submitEdit}>
+      <div>
+        <input type="text" value={editValue} onChange={handleOnChange} required/>
+        <input type="submit" value="Confirm Edit" disabled={editValue.trim().length === 0}/>
+        <button onClick={cancelEdit}>Cancel Edit</button>
+      </div>
+    </form>   
+    </> : <> 
+    {keyed_developer.val}
+    <button onClick={ e=>handleDeleteDeveloper(keyed_developer.id)}>Delete</button>
+    <button onClick={ e=>{setActionType("EDIT")}}>Edit</button> 
+    </>
+  } </div>)
 }
 
 export default DeveloperPanel

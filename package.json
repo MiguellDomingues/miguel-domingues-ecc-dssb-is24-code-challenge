@@ -13,8 +13,7 @@
     "react-scripts": "5.0.1",
     "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0",
-    "uuid": "^9.0.1",
-    "web-vitals": "^2.1.4"
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

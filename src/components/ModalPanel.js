@@ -69,7 +69,7 @@ function ModalPanel({
                       value={ formValues.productOwnerName}/>
                   </div>
                     
-                  {actionType === "ADD" ? 
+                  {actionType === "ADD" ?         //state date input only appears for adding products
                     <div className="form_value">
                       <span>Start Date</span>
                       <input 
@@ -78,7 +78,7 @@ function ModalPanel({
                         required={actionType === "ADD"} 
                         onChange={handleOnChange} 
                         value={ formValues.startDate}/>
-                    </div> : actionType === "EDIT" ?
+                    </div> : actionType === "EDIT" ?   //location input only appears for editing products
                       <div className="form_value">
                         <span>Location</span>
                         <input 

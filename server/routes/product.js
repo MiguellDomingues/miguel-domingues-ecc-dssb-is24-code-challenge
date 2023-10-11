@@ -95,7 +95,6 @@ const {
  *                 $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
- * /products/{product}:
  *   post:
  *     summary: add a new product 
  *     tags: [Products]
@@ -132,15 +131,17 @@ const {
  *                    enum: ["Agile", "Waterfall"]
  *     responses:
  *       200:
- *         description: The updated list of products
+ *         description: The product was added successfully
  *         contens:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
-* /products/{Id}:
- *   patch:
+ *       400:
+ *         description: body params are malformed
+ * /products/{Id}:
+ *   put:
  *     summary: Edit a product by Id
  *     tags: [Products]
  *     parameters:
@@ -175,13 +176,17 @@ const {
  *                    enum: ["Agile", "Waterfall"]
  *     responses:
  *       200:
- *         description: The updated list of products
+ *         description: The product was updated successfully
  *         contens:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
+ *       400:
+ *         description: body params or route Id are malformed
+ *       410:
+ *         description: the product Id was not found
  *   delete:
  *     summary: Delete the product by Id
  *     tags: [Products]
@@ -194,14 +199,18 @@ const {
  *         description: The product id
  *     responses:
  *       200:
- *         description: The updated list of products
+ *         description: The product was deleted successfully
  *         contens:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
-* /products/scrum_master{name}:
+ *       400:
+ *         description: route Id is malformred
+ *       410:
+ *         description: the product Id was not found 
+ * /products/scrum_master{name}:
  *   get:
  *     summary: Get the products which match the scrum master name in the scrumMasterName field
  *     tags: [Products]
@@ -221,7 +230,11 @@ const {
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
-* /products/developer{name}:
+ *       410:
+ *         description: search has no results
+ *       400:
+ *         description: the route param is malformed
+ * /products/developer{name}:
  *   get:
  *     summary: Get the products which contain at least 1 occurance of the developer name in the Developers list
  *     tags: [Products]
@@ -241,6 +254,10 @@ const {
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: server error
+ *       410:
+ *         description: search has no results
+ *       400:
+ *         description: the route param is malformed
  */
 
 //health check
@@ -309,15 +326,19 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
 
   const id = req.params.id
-
-  console.log("DELETE /api/product/:id", id);
+  console.log("DELETE /api/product/:id", id)
 
   if(isProductIdInvalid(id)){
-    console.log("daadadasd")
      res.status(400).send(data);
   }
+
+  const data_length = data.length
+  data = data.filter((datas)=>datas.productId !== id);
+
+  if(data.length === data_length){ // id was not found
+    res.status(410).send(data);
+  }
   else{
-    data = data.filter((datas)=>datas.productId !== id);
     res.status(200).send(data);
   }
 })

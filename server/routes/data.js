@@ -1,5 +1,7 @@
 const { v4: uuidv4, validate: uuidValidate } = require('uuid');
 
+const NUM_RECORDS = 40; //number of mock products to generate upon app init
+
 const mockProductNames = ["ProductA", "ProductB", "ProductC", "ProductD", "ProductE", "ProductF"];
 const mockproductOwnerNames = ["Susan Woo", "Tom Harris", "Miguel Domingues PO", "Captain America", "Johnny Cage"];
 const mockDevelopers = ["Tommy Styles", "Spider Man", "Miguel Domingues", "Ricky Steele", "Hanasha Caberlia", 'Elijah Wood', "Mike Ballswood"];
@@ -8,8 +10,6 @@ const mockStartDates = ["1999/11/4","2000/1/10","2010/10/10","2015/11/10","2023/
 const mockLocations = ["https://github.com/bcgov/EPICtrack", "https://github.com/NotifyBC", "https://github.com/climR-pnw", 
 "https://github.com/jag-jobscheduler", "https://github.com/learningcurator", "https://github.com/PIMS"
 ];
-
-const NUM_RECORDS = 40; //number of mock products to generate upon app init
 
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -31,9 +31,10 @@ const validators = {
  isLocationInvalid:         (loc)=>typeof loc !== 'string',                                                                                             //must be a string     
 }
 
-const data = Array(NUM_RECORDS).fill(0).map(()=>{  //for each product, generate random data for each key from an array
+/*for each product key, pick a random index from the corresponding mock data array*/
+const data = Array(NUM_RECORDS).fill(0).map(()=>{ 
   return {
-        productId:              createRandomID(),          
+        productId:              createRandomID(),       
         productName:            mockProductNames[randomIntFromInterval(0,mockProductNames.length-1)],
         productOwnerName:       mockproductOwnerNames[randomIntFromInterval(0,mockproductOwnerNames.length-1)],  
         Developers:             Array(randomIntFromInterval(0,5)).fill(0).map(()=>mockDevelopers[randomIntFromInterval(0,mockDevelopers.length-1)]),

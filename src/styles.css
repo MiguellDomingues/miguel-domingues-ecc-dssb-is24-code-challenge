@@ -24,13 +24,21 @@
 }
 
 .action_panel{
-  width: fit-content;
+  position: relative;
   border-collapse: collapse;
   display: flex;  
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
+
+.result_text{
+  font-size: small;
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+}
+
 
 .dev_list{
   display: flex;

@@ -10,7 +10,7 @@ Dev/Testing Enviroment:
 - clone the repo
   - `git clone https://github.com/MiguellDomingues/miguel-domingues-ecc-dssb-is24-code-challenge.git`
 - navigate into the project folder
-  - `cd MiguellDomingues/miguel-domingues-ecc-dssb-is24-code-challenge`
+  - `cd miguel-domingues-ecc-dssb-is24-code-challenge`
 - install dependencies:
   - `npm install`
   
